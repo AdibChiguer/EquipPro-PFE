@@ -1,7 +1,6 @@
 package com.EquipPro.backend.service;
 
 import com.EquipPro.backend.model.Equipment;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 

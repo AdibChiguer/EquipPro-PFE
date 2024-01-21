@@ -2,7 +2,7 @@ package com.EquipPro.backend.service;
 
 import com.EquipPro.backend.exception.EquimpmentAlreadyExistsException;
 import com.EquipPro.backend.exception.EquipmentNotFoundException;
-import com.EquipPro.backend.exception.UserAlreadyExistsException;
+import com.EquipPro.backend.exception.UserNotFoundException;
 import com.EquipPro.backend.model.Equipment;
 import com.EquipPro.backend.model.User;
 import com.EquipPro.backend.repository.EquipmentRepository;
@@ -27,12 +27,22 @@ public class EquipmentServiceImp implements EquipmentService {
     }
     @Override
     public List<Equipment> getOwnedEquipments(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.map(User::getOwnedEquipments).orElse(null);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user.getOwnedEquipments();
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
     }
     @Override
     public List<Equipment> getFixedEquipments(Long technicianId) {
-        return userRepository.getFixedEquipments(technicianId);
+        Optional<User> technician = userRepository.findById(technicianId);
+        if (technician.isPresent()){
+            return userRepository.getFixedEquipments(technicianId);
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
     }
     @Override
     public Equipment createEquipment(String equipmentName, String serialEquipmentCode) {
@@ -43,7 +53,12 @@ public class EquipmentServiceImp implements EquipmentService {
     }
     @Override
     public List<Equipment> getFixingEquipment(Long technicianId) {
-        return userRepository.getFixingEquipments(technicianId);
+        Optional<User> technician = userRepository.findById(technicianId);
+        if (technician.isPresent()){
+            return userRepository.getFixingEquipments(technicianId);
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
     }
     @Override
     public List<Equipment> getAvailableEquipment() {
@@ -59,16 +74,21 @@ public class EquipmentServiceImp implements EquipmentService {
         Equipment equipment = getEquipment(equipmentId);
         if(equipment != null){
             equipmentRepository.deleteById(equipmentId);
+        } else {
+            throw new EquipmentNotFoundException("equipment not found with the id : "+ equipmentId);
         }
     }
     @Override
     public void assignEquipmentToUser(Long equipmentId, Long userId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-        if (user.isPresent() && user.get().getOwnedEquipments().contains(equipment.get())){
+        if (user.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        } else if (equipment.isEmpty()){
+            throw new EquipmentNotFoundException("Equipment not found");
+        } else if (user.get().getOwnedEquipments().contains(equipment.get())){
             throw new EquimpmentAlreadyExistsException(equipment.get().getEquipmentName()+ " is already assigned to the user: "+ user.get().getFullName());
-        }
-        if (equipment.isPresent() && user.isPresent()){
+        } else {
             user.get().assignEquipmentToUser(equipment.get());
             userRepository.save(user.get());
         }
@@ -77,19 +97,25 @@ public class EquipmentServiceImp implements EquipmentService {
     public void assignEquipmentToTechnician(Long equipmentId, Long technicianId) {
         Optional<User> technician = userRepository.findById(technicianId);
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-        if (technician.isPresent() && technician.get().getEquipmentInWork().contains(equipment.get())){
+        if (technician.isEmpty()){
+            throw new UserNotFoundException("technician not found");
+        } else if (equipment.isEmpty()){
+            throw new EquipmentNotFoundException("equipment not found");
+        } else if (technician.get().getEquipmentInWork().contains(equipment.get())){
             throw new EquimpmentAlreadyExistsException(equipment.get().getEquipmentName()+ " is already assigned to the technician: "+ technician.get().getFullName());
         }
-        if (equipment.isPresent() && technician.isPresent()){
-            technician.get().assignEquipmentToTechnician(equipment.get());
-            userRepository.save(technician.get());
-        }
+        technician.get().assignEquipmentToTechnician(equipment.get());
+        userRepository.save(technician.get());
     }
     @Override
     public void removeEquipmentFromUser(Long equipmentId, Long userId) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-        if (user.isPresent() && equipment.isPresent()){
+        if (user.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        } else if (equipment.isEmpty()){
+            throw new EquipmentNotFoundException("Equipment not found");
+        } else {
             user.get().removeEquipmentFromUser(equipment.get());
         }
     }
@@ -97,7 +123,11 @@ public class EquipmentServiceImp implements EquipmentService {
     public void removeEquipmentFromTechnician(Long equipmentId, Long technicianId) {
         Optional<User> technician = userRepository.findById(technicianId);
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
-        if (technician.isPresent() && equipment.isPresent()){
+        if (technician.isEmpty()){
+            throw new UserNotFoundException("Technician not found");
+        } else if (equipment.isEmpty()){
+            throw new EquipmentNotFoundException("Equipment not found");
+        } else {
             technician.get().removeEquipmentFromTechnician(equipment.get());
         }
     }

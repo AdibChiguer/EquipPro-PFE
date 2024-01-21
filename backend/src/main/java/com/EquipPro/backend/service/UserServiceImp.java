@@ -1,7 +1,7 @@
 package com.EquipPro.backend.service;
 
 import com.EquipPro.backend.exception.UserAlreadyExistsException;
-import com.EquipPro.backend.exception.UsernameNotFoundException;
+import com.EquipPro.backend.exception.UserNotFoundException;
 import com.EquipPro.backend.model.User;
 import com.EquipPro.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -26,10 +26,13 @@ public class UserServiceImp implements UserService{
     @Override
     public void deleteUser(String email) {
         User user = getUser(email);
-        if(user != null){
+        if (user != null) {
             userRepository.deleteByEmail(email);
+        } else {
+            throw new UserNotFoundException("User not found with email: " + email);
         }
     }
+
     @Override
     public User registerUser(User user) {
         if(userRepository.existsByEmail(user.getEmail())){
@@ -41,6 +44,6 @@ public class UserServiceImp implements UserService{
     @Override
     public User getUser(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
     }
 }

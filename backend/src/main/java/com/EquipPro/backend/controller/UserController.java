@@ -1,9 +1,7 @@
 package com.EquipPro.backend.controller;
 
-import com.EquipPro.backend.exception.UsernameNotFoundException;
-import com.EquipPro.backend.model.Equipment;
+import com.EquipPro.backend.exception.UserNotFoundException;
 import com.EquipPro.backend.model.User;
-import com.EquipPro.backend.repository.UserRepository;
 import com.EquipPro.backend.service.UserServiceImp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +25,7 @@ public class UserController {
         try {
             User user = userService.getUser(email);
             return ResponseEntity.ok(user);
-        } catch (UsernameNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user");
@@ -38,11 +36,10 @@ public class UserController {
         try {
             userService.deleteUser(email);
             return ResponseEntity.ok("User deleted successfully");
-        } catch (UsernameNotFoundException e){
+        } catch (UserNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user");
         }
     }
-
 }
