@@ -1,6 +1,8 @@
 package com.EquipPro.backend.service;
 
+import com.EquipPro.backend.exception.EquipmentNotFoundException;
 import com.EquipPro.backend.exception.TicketNotFoundException;
+import com.EquipPro.backend.exception.UserNotFoundException;
 import com.EquipPro.backend.model.Equipment;
 import com.EquipPro.backend.model.Ticket;
 import com.EquipPro.backend.model.User;
@@ -38,18 +40,28 @@ public class TicketServiceImp implements TicketService{
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
         Optional<User> owner = userRepository.findById(ownerId);
         Optional<User> technician = userRepository.findById(technicianId);
-        if(equipment.isPresent() && owner.isPresent() && technician.isPresent()){
+
+        if (equipment.isEmpty()){
+            throw new EquipmentNotFoundException("Equipment not found");
+        } else if (owner.isEmpty()) {
+            throw new UserNotFoundException("Owner not found");
+        } else if (technician.isEmpty()) {
+            throw new UserNotFoundException("Technician not found");
+        } else {
             ticket.setTakingTime(takingTime);
             ticket.setEquipment(equipment.get());
             ticket.setEquipmentOwner(owner.get());
             ticket.setTechnician(technician.get());
             return ticketRepository.save(ticket);
         }
-        return null;
     }
 
     @Override
     public void deleteTicket(Long ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()){
+            throw new TicketNotFoundException("Ticket not found");
+        }
         ticketRepository.deleteById(ticketId);
     }
 }
