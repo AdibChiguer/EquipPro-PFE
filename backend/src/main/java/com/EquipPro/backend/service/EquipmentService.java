@@ -17,5 +17,6 @@ public interface EquipmentService {
     void assignEquipmentToTechnician(Long equipmentId , Long technicianId);
     void removeEquipmentFromUser(Long equipmentId, Long userId);
     void removeEquipmentFromTechnician(Long equipmentId, Long technicianId);
+    Equipment equipmentIssueRequest(Long equipmentId);
 
 }

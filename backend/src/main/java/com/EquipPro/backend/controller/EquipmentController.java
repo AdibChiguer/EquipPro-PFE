@@ -147,4 +147,14 @@ public class EquipmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing equipment from the user");
         }
     }
+
+    public ResponseEntity<?> equipmentIssueRequest(@PathVariable("equipmentId") Long equipmentId){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(equipmentService.equipmentIssueRequest(equipmentId));
+        } catch (EquipmentNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error making the request issue");
+        }
+    }
 }

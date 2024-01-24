@@ -49,10 +49,6 @@ public class Equipment {
     )
     private List<User> technicians = new ArrayList<>();
 
-    // I think I don't need it
-    @OneToMany(mappedBy = "equipment")
-    private List<EquipmentRequest> equipmentRequests;
-    //
     @ManyToOne
     @JoinColumn(name = "current_technician_id")
     private User currentTechnician;

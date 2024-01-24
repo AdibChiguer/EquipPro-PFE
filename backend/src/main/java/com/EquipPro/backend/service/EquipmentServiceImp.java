@@ -107,6 +107,17 @@ public class EquipmentServiceImp implements EquipmentService {
         technician.get().assignEquipmentToTechnician(equipment.get());
         userRepository.save(technician.get());
     }
+
+    @Override
+    public Equipment equipmentIssueRequest(Long equipmentId) {
+        Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
+        if(equipment.isEmpty()){
+            throw new EquipmentNotFoundException("equipment not found");
+        }
+        equipment.get().setIssueStatus(true);
+        return equipment.get();
+    }
+
     @Override
     public void removeEquipmentFromUser(Long equipmentId, Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -119,6 +130,7 @@ public class EquipmentServiceImp implements EquipmentService {
             user.get().removeEquipmentFromUser(equipment.get());
         }
     }
+
     @Override
     public void removeEquipmentFromTechnician(Long equipmentId, Long technicianId) {
         Optional<User> technician = userRepository.findById(technicianId);

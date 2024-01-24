@@ -20,10 +20,10 @@ public class UserController {
     public ResponseEntity<List<User>> getUsers(){
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.FOUND);
     }
-    @GetMapping("/{email}")
-    public ResponseEntity<?> getUserByEmail(@PathVariable String email){
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable Long userId){
         try {
-            User user = userService.getUser(email);
+            User user = userService.getUser(userId);
             return ResponseEntity.ok(user);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -31,10 +31,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user");
         }
     }
-    @DeleteMapping("/delete/{email}")
-    public ResponseEntity<String> deleteUser(@PathVariable String email){
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId){
         try {
-            userService.deleteUser(email);
+            userService.deleteUser(userId);
             return ResponseEntity.ok("User deleted successfully");
         } catch (UserNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
