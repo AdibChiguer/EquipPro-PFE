@@ -11,8 +11,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -107,7 +109,6 @@ public class EquipmentServiceImp implements EquipmentService {
         technician.get().assignEquipmentToTechnician(equipment.get());
         userRepository.save(technician.get());
     }
-
     @Override
     public Equipment equipmentIssueRequest(Long equipmentId) {
         Optional<Equipment> equipment = equipmentRepository.findById(equipmentId);
@@ -117,7 +118,6 @@ public class EquipmentServiceImp implements EquipmentService {
         equipment.get().setIssueStatus(true);
         return equipment.get();
     }
-
     @Override
     public void removeEquipmentFromUser(Long equipmentId, Long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -128,9 +128,9 @@ public class EquipmentServiceImp implements EquipmentService {
             throw new EquipmentNotFoundException("Equipment not found");
         } else {
             user.get().removeEquipmentFromUser(equipment.get());
+            userRepository.save(user.get());
         }
     }
-
     @Override
     public void removeEquipmentFromTechnician(Long equipmentId, Long technicianId) {
         Optional<User> technician = userRepository.findById(technicianId);
@@ -141,6 +141,11 @@ public class EquipmentServiceImp implements EquipmentService {
             throw new EquipmentNotFoundException("Equipment not found");
         } else {
             technician.get().removeEquipmentFromTechnician(equipment.get());
+            userRepository.save(technician.get());
         }
+    }
+    @Override
+    public List<Equipment> getCrushedEquipments() {
+        return equipmentRepository.findEquipmentByIssueStatus(true);
     }
 }

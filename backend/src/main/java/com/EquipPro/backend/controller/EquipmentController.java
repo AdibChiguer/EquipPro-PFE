@@ -147,7 +147,7 @@ public class EquipmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing equipment from the user");
         }
     }
-
+    @PostMapping("/equipment-issue-request/{equipmentId}")
     public ResponseEntity<?> equipmentIssueRequest(@PathVariable("equipmentId") Long equipmentId){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(equipmentService.equipmentIssueRequest(equipmentId));
@@ -156,5 +156,10 @@ public class EquipmentController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error making the request issue");
         }
+    }
+
+    @GetMapping("/crushed-equipments")
+    public ResponseEntity<List<Equipment>> getCrushedEquipments(){
+        return ResponseEntity.ok(equipmentService.getCrushedEquipments());
     }
 }

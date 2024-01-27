@@ -1,5 +1,6 @@
 package com.EquipPro.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class EquipmentRequest {
 
     @ManyToOne
     @JoinColumn(name = "worker_id")
+    @JsonBackReference
     private User worker;
 
     @ManyToOne

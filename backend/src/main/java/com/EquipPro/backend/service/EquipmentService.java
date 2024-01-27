@@ -18,5 +18,5 @@ public interface EquipmentService {
     void removeEquipmentFromUser(Long equipmentId, Long userId);
     void removeEquipmentFromTechnician(Long equipmentId, Long technicianId);
     Equipment equipmentIssueRequest(Long equipmentId);
-
+    List<Equipment> getCrushedEquipments();
 }

@@ -1,5 +1,7 @@
 package com.EquipPro.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +15,6 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Equipment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,15 +23,15 @@ public class Equipment {
     @Column(name = "serial_equipment_code")
     private String serialEquipmentCode;
     @Column(name = "ownership_status")
-    private Boolean ownershipStatus;
+    private boolean ownershipStatus;
     @Column(name = "issue_status")
-    private Boolean issueStatus;
+    private boolean issueStatus;
     @Column(name = "date_of_ownership")
     private LocalDate dateOfOwnership;
     @Column(name = "crash_count")
-    private Integer crashCount;
+    private int crashCount;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private User currentUser;
 
     @ManyToMany
@@ -49,7 +50,7 @@ public class Equipment {
     )
     private List<User> technicians = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "current_technician_id")
     private User currentTechnician;
 
@@ -63,5 +64,7 @@ public class Equipment {
     public void setTechnicians(User technician) {
         this.technicians.add(technician);
     }
-
+    public Equipment() {
+        this.crashCount = 0;
+    }
 }

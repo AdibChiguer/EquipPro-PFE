@@ -44,7 +44,7 @@ public class EquipmentRequestImp implements EquipmentRequestService{
         equipmentRequest.setEquipment(equipment);
         equipmentRequest.setWorker(user.get());
         equipmentRequest.setRequestStatus(false);
-        return equipmentRequest;
+        return equipmentRequestRepository.save(equipmentRequest);
     }
 
     @Override

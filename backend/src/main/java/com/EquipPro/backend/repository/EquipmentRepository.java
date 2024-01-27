@@ -8,4 +8,5 @@ import java.util.List;
 public interface EquipmentRepository extends JpaRepository<Equipment, Long> {
 
     List<Equipment> findEquipmentByOwnershipStatus(Boolean status);
+    List<Equipment> findEquipmentByIssueStatus(Boolean status);
 }
