@@ -21,16 +21,13 @@ public class User {
     private String fullName;
     private String role;
 
-    // for the user and admin to see all the requests
     @OneToMany(mappedBy = "worker", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<EquipmentRequest> requestedEquipment = new ArrayList<>();
 
-    // for the user to get all the equipment that he owns
     @OneToMany(mappedBy = "currentUser" , fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     private List<Equipment> ownedEquipments = new ArrayList<>();
 
-    // for the technician to see all the fixed equipment
     @ManyToMany(mappedBy = "technicians")
     private List<Equipment> fixedEquipments = new ArrayList<>();
 
