@@ -75,6 +75,20 @@ public class EquipmentServiceImp implements EquipmentService {
     public void deleteEquipment(Long equipmentId) {
         Equipment equipment = getEquipment(equipmentId);
         if(equipment != null){
+            List<User> technicians = equipment.getTechnicians();
+            if (!technicians.isEmpty()){
+                for ( User technician : technicians ) {
+                    if (technician.getEquipmentInWork().contains(equipment)){
+                        technician.getEquipmentInWork().remove(equipment);
+                    } else if (technician.getFixedEquipments().contains(equipment)){
+                        technician.getFixedEquipments().remove(equipment);
+                    }
+                }
+            }
+            User user = equipment.getCurrentUser();
+            if (user != null){
+                user.getOwnedEquipments().remove(equipment);
+            }
             equipmentRepository.deleteById(equipmentId);
         } else {
             throw new EquipmentNotFoundException("equipment not found with the id : "+ equipmentId);

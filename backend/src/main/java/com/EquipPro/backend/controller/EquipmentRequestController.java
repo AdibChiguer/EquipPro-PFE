@@ -20,7 +20,7 @@ public class EquipmentRequestController {
     private final EquipmentRequestImp equipmentRequestImp;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EquipmentRequest>> getAllEquipmentRequests(){
         return ResponseEntity.ok(equipmentRequestImp.getAllEquipmentRequest());
     }

@@ -3,12 +3,8 @@ package com.EquipPro.backend.service;
 import com.EquipPro.backend.exception.TheRoleNotFoundException;
 import com.EquipPro.backend.exception.UserAlreadyExistsException;
 import com.EquipPro.backend.exception.UserNotFoundException;
-import com.EquipPro.backend.model.Equipment;
-import com.EquipPro.backend.model.Role;
-import com.EquipPro.backend.model.User;
-import com.EquipPro.backend.repository.EquipmentRepository;
-import com.EquipPro.backend.repository.RoleRepository;
-import com.EquipPro.backend.repository.UserRepository;
+import com.EquipPro.backend.model.*;
+import com.EquipPro.backend.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +22,8 @@ public class UserServiceImp implements UserService{
     private final PasswordEncoder passwordEncoder;
     private final EquipmentRepository equipmentRepository;
     private final RoleRepository roleRepository;
+    private final EquipmentRequestRepository equipmentRequestRepository;
+    private final TicketRepository ticketRepository;
 
     @Override
     public List<User> getUsers() {
@@ -36,6 +34,7 @@ public class UserServiceImp implements UserService{
     public void deleteUser(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
+            // delete all the equipments that are related to the user
             List<Equipment> equipmentList = equipmentRepository.findAll();
             for (Equipment equipment : equipmentList) {
                 equipment.getOwnedBy().remove(user.get());
@@ -48,6 +47,19 @@ public class UserServiceImp implements UserService{
                     equipment.setCurrentTechnician(null);
                 }
                 equipmentRepository.save(equipment);
+            }
+            // delete all the equipmentRequests that are related to the user
+            List<EquipmentRequest> equipmentRequests = equipmentRequestRepository.findAll();
+            for (EquipmentRequest equipmentRequest : equipmentRequests) {
+                if (equipmentRequest.getWorker() == user.get()){
+                    equipmentRequestRepository.deleteById(equipmentRequest.getId());
+                }
+            }
+            List<Ticket> tickets = ticketRepository.findAll();
+            for (Ticket ticket : tickets){
+                if(ticket.getEquipmentOwner() == user.get() || ticket.getTechnician() == user.get()){
+                    ticketRepository.deleteById(ticket.getId());
+                }
             }
             userRepository.deleteById(user.get().getId());
         } else {

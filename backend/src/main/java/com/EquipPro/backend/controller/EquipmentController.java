@@ -20,7 +20,7 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Equipment>> getAllEquipment(){
         return new ResponseEntity<>(equipmentService.getAllEquipments() , HttpStatus.FOUND);
     }
@@ -61,7 +61,7 @@ public class EquipmentController {
     }
 
     @PostMapping("/create-equipment")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Equipment> createEquipment(@RequestBody Equipment reqEquipment){
         Equipment equipment = equipmentService.
                 createEquipment(reqEquipment.getEquipmentName(), reqEquipment.getSerialEquipmentCode());
@@ -85,7 +85,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/delete/equipment/{equipmentId}")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteEquipment(@PathVariable Long equipmentId){
         try{
             equipmentService.deleteEquipment(equipmentId);

@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.FOUND;
 public class RoleController {
     private final RoleService roleService;
 
-    @GetMapping("/all-roles")
+    @GetMapping("/all")
     public ResponseEntity<List<Role>> getAllRoles(){
         return new ResponseEntity<>(roleService.getRoles(), FOUND);
     }

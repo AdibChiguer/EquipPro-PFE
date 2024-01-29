@@ -54,8 +54,8 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/equipments/**" , "/equipment-requests/**", "/tickets").permitAll()
-                        .requestMatchers("/users/**").hasRole("ADMIN").anyRequest().authenticated());                ;
+                        .requestMatchers("/**").permitAll());
+//                        .requestMatchers("/users/**").hasRole("ADMIN").anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
