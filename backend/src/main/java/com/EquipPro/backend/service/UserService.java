@@ -8,6 +8,6 @@ import java.util.List;
 public interface UserService {
     List<User> getUsers();
     User getUser(Long userId);
-    void deleteUser(Long userId);
+    void deleteUser(String email);
     User registerUser(User user);
 }

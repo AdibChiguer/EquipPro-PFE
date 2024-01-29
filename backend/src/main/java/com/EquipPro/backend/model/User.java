@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Getter @Setter
@@ -19,7 +17,11 @@ public class User {
     private String email;
     private String password;
     private String fullName;
-    private String role;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.MERGE, CascadeType.DETACH})
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "worker", fetch = FetchType.LAZY , cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -61,15 +63,4 @@ public class User {
             equipment.setCurrentTechnician(null);
         }
     }
-
-    public void deleteUser(User user){
-        if (user != null){
-            if(user.role == "USER"){
-
-            } else if(user.role == "TECHNICIAN"){
-
-            }
-        }
-    }
-
 }

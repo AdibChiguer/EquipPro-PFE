@@ -5,11 +5,10 @@ import com.EquipPro.backend.exception.EquipmentRequestNotFoundException;
 import com.EquipPro.backend.exception.UserNotFoundException;
 import com.EquipPro.backend.model.EquipmentRequest;
 import com.EquipPro.backend.service.EquipmentRequestImp;
-import jdk.dynalink.linker.LinkerServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +20,7 @@ public class EquipmentRequestController {
     private final EquipmentRequestImp equipmentRequestImp;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EquipmentRequest>> getAllEquipmentRequests(){
         return ResponseEntity.ok(equipmentRequestImp.getAllEquipmentRequest());
     }

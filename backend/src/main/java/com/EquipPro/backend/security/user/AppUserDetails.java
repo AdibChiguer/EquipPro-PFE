@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -23,8 +24,10 @@ public class AppUserDetails implements UserDetails {
     private Collection<GrantedAuthority> authorities;
 
     public static AppUserDetails buildUserDetails(User user){
-
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
+        List<GrantedAuthority> authorities = user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
 
         return new AppUserDetails(
                 user.getId(),

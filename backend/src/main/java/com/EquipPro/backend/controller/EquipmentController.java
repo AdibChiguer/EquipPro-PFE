@@ -8,6 +8,7 @@ import com.EquipPro.backend.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class EquipmentController {
     private final EquipmentService equipmentService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Equipment>> getAllEquipment(){
         return new ResponseEntity<>(equipmentService.getAllEquipments() , HttpStatus.FOUND);
     }
@@ -59,6 +61,7 @@ public class EquipmentController {
     }
 
     @PostMapping("/create-equipment")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Equipment> createEquipment(@RequestBody Equipment reqEquipment){
         Equipment equipment = equipmentService.
                 createEquipment(reqEquipment.getEquipmentName(), reqEquipment.getSerialEquipmentCode());
@@ -82,6 +85,7 @@ public class EquipmentController {
     }
 
     @DeleteMapping("/delete/equipment/{equipmentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteEquipment(@PathVariable Long equipmentId){
         try{
             equipmentService.deleteEquipment(equipmentId);
@@ -94,6 +98,7 @@ public class EquipmentController {
     }
 
     @PostMapping("/assign-equipment-to-user")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> assignEquipmentToUser(@RequestParam("userId") Long userId,
                                                         @RequestParam("equipmentId") Long equipmentId){
         try {
@@ -108,6 +113,7 @@ public class EquipmentController {
         }
     }
     @PostMapping("/assign-crashed-equipment-to-technician")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> assignCrashedEquipmentToTechnician(@RequestParam("technicianId") Long technicianId,
                                                               @RequestParam("equipmentId") Long equipmentId){
         try {
@@ -123,6 +129,7 @@ public class EquipmentController {
     }
 
     @PostMapping("/remove-equipment-from-user")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> removeEquipmentFromUser(@RequestParam("userId") Long userId,
                                                           @RequestParam("equipmentId") Long equipmentId){
         try {
@@ -136,6 +143,7 @@ public class EquipmentController {
     }
 
     @PostMapping("/remove-equipment-from-technician")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> removeEquipmentFromTechnician(@RequestParam("technicianId") Long technicianId,
                                                                 @RequestParam("equipmentId") Long equipmentId){
         try {
@@ -159,6 +167,7 @@ public class EquipmentController {
     }
 
     @GetMapping("/crushed-equipments")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Equipment>> getCrushedEquipments(){
         return ResponseEntity.ok(equipmentService.getCrushedEquipments());
     }
